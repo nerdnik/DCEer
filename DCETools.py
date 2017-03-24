@@ -10,15 +10,21 @@ def wav_to_txt(wav_file_name, output_file_name, crop=[0, 1]):
     np.savetxt(output_file_name, snd)
 
 
-def embed(input_file_name, output_file_name, embed_crop, tau, m, channel=0):
+def embed(input_file_name, output_file_name, embed_crop, tau, m, wav_sample_rate,
+          ds_rate=1,
+          channel=0):
+
     # print 'embedding...'
     input_file = open(input_file_name, "r")
     output_file = open(output_file_name, "w")
     output_file.truncate()  # ??
     lines = input_file.read().split("\n")
 
-    bounds = len(lines) * np.array(embed_crop)
-    lines = lines[int(bounds[0]):int(bounds[1])]
+    worm_length_sec = len(lines) / wav_sample_rate
+    embed_crop_norm = [t / worm_length_sec for t in embed_crop]
+
+    bounds = len(lines) * np.array(embed_crop_norm)
+    lines = lines[int(bounds[0]): int(bounds[1]) : ds_rate]
 
     series = []
     for line in lines:

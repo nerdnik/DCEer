@@ -1,37 +1,59 @@
+import sys
 import time
 from DCETools import wav_to_txt, batch_wav_to_txt
-from DCEPlotter import make_window_fig
+from DCEPlotter import make_window_frame
 from DCEMovies import frames_to_movie
 from DCEMovies import vary_tau, slide_window, compare_multi, compare_vary_tau
 
 
-test = 0
+# test = 4
+test = int(sys.argv[1])
+
 start_time = time.time()
 
 if test == 0:
-    batch_wav_to_txt('C:\Users\PROGRAMMING\Documents\CU_research\DCEer\input\piano_data\C134C')
-    batch_wav_to_txt('C:\Users\PROGRAMMING\Documents\CU_research\DCEer\input\piano_data\C135B')
+    batch_wav_to_txt('input\piano_data\C134C')
+    batch_wav_to_txt('input\piano_data\C135B')
+
 
 if test == 1:
-    vary_tau('input/34-C135B.txt', tau_lims=(1, 100), tau_inc=5, embed_crop=(.27, .275))
+    vary_tau('input/34-C135B.txt',
+             tau_lims=(1, 100),
+             tau_inc=5,
+             embed_crop=(.27, .5),  # aka window position, in seconds
+             ds_rate=3)             # downsample rate (takes every third sample)
+
     frames_to_movie('output/vary_tau_test.mp4', framerate=1)
 
+
 if test == 2:
-    slide_window('input/34-C135B.txt')
+    slide_window('input/34-C135B.txt',
+                 window_size=.5,    # seconds
+                 ds_rate=5,
+                 tau=20,
+                 step_size=.1)      # how much to move window each frame
+
     frames_to_movie('output/slide_window_test.mp4', framerate=1)
 
+
 if test == 3:
-    compare_vary_tau('input/34-C135B.txt', 'input/34-C134C.txt', tau_lims=(1, 50))
+    compare_vary_tau('input/34-C135B.txt', 'input/34-C134C.txt',
+                     tau_lims=(1, 50),
+                     tau_inc=1,
+                     embed_crop=(2.5, 3))
+
     frames_to_movie('output/compare_tau_test.mp4', framerate=1)
 
+
 if test == 4:
-    dir1 = "C:/Users/PROGRAMMING/Documents/CU_research/piano_data/C134C"
-    dir2 = "C:/Users/PROGRAMMING/Documents/CU_research/piano_data/C135B"
+    dir1 = "input/piano_data/C134C"
+    dir2 = "input/piano_data/C135B"
     tau = 20
-    compare_multi(dir1,'-C134C.txt', dir2, '-C135B.txt', tau, max_frames=15, embed_crop=(0, .2))
+    compare_multi(dir1,'-C134C.txt',
+                  dir2, '-C135B.txt',
+                  tau,
+                  embed_crop=(0, .2))
     frames_to_movie('output/compare_multi_test.mp4', framerate=1)
-
-
 
 
 print("time elapsed: %d seconds" % (time.time() - start_time))
