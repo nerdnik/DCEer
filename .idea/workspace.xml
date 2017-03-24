@@ -1,30 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="7c6bc742-71cb-4b9e-8309-28aa2ddf58fd" name="Default" comment="">
-      <change type="DELETED" beforePath="$PROJECT_DIR$/frames/frame005.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/frames/frame006.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/frames/frame007.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/frames/frame008.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/frames/frame009.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/frames/frame010.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/frames/frame011.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/frames/frame012.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/frames/frame013.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/frames/frame014.png" afterPath="" />
+    <list default="true" id="7c6bc742-71cb-4b9e-8309-28aa2ddf58fd" name="Default" comment="fixed vary_tau() window bug">
+      <change type="DELETED" beforePath="$PROJECT_DIR$/frames/frame002.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/frames/frame003.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/frames/frame004.png" afterPath="" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/frames/frame001.png" afterPath="$PROJECT_DIR$/frames/frame001.png" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/frames/frame002.png" afterPath="$PROJECT_DIR$/frames/frame002.png" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/frames/frame003.png" afterPath="$PROJECT_DIR$/frames/frame003.png" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/frames/frame004.png" afterPath="$PROJECT_DIR$/frames/frame004.png" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/output/compare_multi_test.mp4" afterPath="$PROJECT_DIR$/output/compare_multi_test.mp4" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/output/vary_tau_test.mp4" afterPath="$PROJECT_DIR$/output/vary_tau_test.mp4" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/DCEMovies.py" afterPath="$PROJECT_DIR$/DCEMovies.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/DCEPlotter.py" afterPath="$PROJECT_DIR$/DCEPlotter.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/DCETester.py" afterPath="$PROJECT_DIR$/DCETester.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/DCETools.py" afterPath="$PROJECT_DIR$/DCETools.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/data/embedded_coords.txt" afterPath="$PROJECT_DIR$/data/embedded_coords.txt" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/data/embedded_coords_comp1.txt" afterPath="$PROJECT_DIR$/data/embedded_coords_comp1.txt" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/data/embedded_coords_comp2.txt" afterPath="$PROJECT_DIR$/data/embedded_coords_comp2.txt" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -36,7 +19,7 @@
   <component name="CoverageDataManager">
     <SUITE FILE_PATH="coverage/DCEer$DelayCoordinateEmbedding.coverage" NAME="DelayCoordinateEmbedding Coverage Results" MODIFIED="1488831197869" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/DCEer$DCETools.coverage" NAME="DCETools Coverage Results" MODIFIED="1490287162579" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/DCEer$DCETester.coverage" NAME="DCETester Coverage Results" MODIFIED="1490337552006" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/DCEer$DCETester.coverage" NAME="DCETester Coverage Results" MODIFIED="1490384223975" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
   <component name="CreatePatchCommitExecutor">
     <option name="PATCH_PATH" value="" />
@@ -50,8 +33,8 @@
       <file leaf-file-name="DCETester.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/DCETester.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1276">
-              <caret line="58" column="9" lean-forward="false" selection-start-line="58" selection-start-column="9" selection-end-line="58" selection-end-column="9" />
+            <state relative-caret-position="22">
+              <caret line="8" column="8" lean-forward="false" selection-start-line="8" selection-start-column="8" selection-end-line="8" selection-end-column="8" />
               <folding>
                 <element signature="e#0#10#0" expanded="true" />
               </folding>
@@ -62,8 +45,8 @@
       <file leaf-file-name="DCEMovies.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/DCEMovies.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="228">
-              <caret line="75" column="4" lean-forward="false" selection-start-line="75" selection-start-column="4" selection-end-line="75" selection-end-column="4" />
+            <state relative-caret-position="440">
+              <caret line="83" column="0" lean-forward="true" selection-start-line="83" selection-start-column="0" selection-end-line="83" selection-end-column="0" />
               <folding>
                 <element signature="e#0#15#0" expanded="true" />
                 <element signature="e#283#751#0" expanded="false" />
@@ -75,8 +58,8 @@
       <file leaf-file-name="DCEPlotter.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/DCEPlotter.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="640">
-              <caret line="146" column="66" lean-forward="false" selection-start-line="146" selection-start-column="66" selection-end-line="146" selection-end-column="66" />
+            <state relative-caret-position="1540">
+              <caret line="92" column="0" lean-forward="false" selection-start-line="92" selection-start-column="0" selection-end-line="92" selection-end-column="0" />
               <folding>
                 <element signature="e#0#11#0" expanded="true" />
                 <element signature="e#776#777#0" expanded="false" />
@@ -142,8 +125,8 @@
         <option value="$PROJECT_DIR$/DelayCoordinateEmbedding.py" />
         <option value="$PROJECT_DIR$/DCETools.py" />
         <option value="$PROJECT_DIR$/DCEPlotter.py" />
-        <option value="$PROJECT_DIR$/DCEMovies.py" />
         <option value="$PROJECT_DIR$/DCETester.py" />
+        <option value="$PROJECT_DIR$/DCEMovies.py" />
       </list>
     </option>
   </component>
@@ -478,21 +461,29 @@
       <option name="presentableId" value="Default" />
       <updated>1488224344937</updated>
     </task>
+    <task id="LOCAL-00001" summary="fixed vary_tau() window bug">
+      <created>1490379203096</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1490379203096</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="ToolWindowManager">
     <frame x="71" y="-9" width="1858" height="1098" extended-state="6" />
-    <editor active="true" />
+    <editor active="false" />
     <layout>
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.18462402" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3290461" sideWeight="0.50224465" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Version Control" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.3290461" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3290461" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.23151125" sideWeight="0.49775532" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.20650955" sideWeight="0.49285713" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.23151125" sideWeight="0.49775532" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.21268238" sideWeight="0.49285713" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3290461" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.24971941" sideWeight="0.50714284" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.39978564" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
@@ -536,10 +527,12 @@
     <ignored-roots>
       <path value="$PROJECT_DIR$" />
     </ignored-roots>
+    <MESSAGE value="fixed vary_tau() window bug" />
+    <option name="LAST_COMMIT_MESSAGE" value="fixed vary_tau() window bug" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
-      <option name="time" value="19" />
+      <option name="time" value="21" />
     </breakpoint-manager>
     <watches-manager />
   </component>
@@ -879,11 +872,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/frames/frame007.png" />
     <entry file="file://$PROJECT_DIR$/frames/frame008.png" />
-    <entry file="file://$PROJECT_DIR$/frames/frame000.png">
-      <provider selected="true" editor-type-id="images">
-        <state />
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/frames/frame000.png" />
     <entry file="file://$PROJECT_DIR$/DCETools.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="220">
@@ -896,8 +885,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/DCEPlotter.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="640">
-          <caret line="146" column="66" lean-forward="false" selection-start-line="146" selection-start-column="66" selection-end-line="146" selection-end-column="66" />
+        <state relative-caret-position="1540">
+          <caret line="92" column="0" lean-forward="false" selection-start-line="92" selection-start-column="0" selection-end-line="92" selection-end-column="0" />
           <folding>
             <element signature="e#0#11#0" expanded="true" />
             <element signature="e#776#777#0" expanded="false" />
@@ -909,8 +898,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/DCEMovies.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="228">
-          <caret line="75" column="4" lean-forward="false" selection-start-line="75" selection-start-column="4" selection-end-line="75" selection-end-column="4" />
+        <state relative-caret-position="440">
+          <caret line="83" column="0" lean-forward="true" selection-start-line="83" selection-start-column="0" selection-end-line="83" selection-end-column="0" />
           <folding>
             <element signature="e#0#15#0" expanded="true" />
             <element signature="e#283#751#0" expanded="false" />
@@ -920,8 +909,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/DCETester.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1276">
-          <caret line="58" column="9" lean-forward="false" selection-start-line="58" selection-start-column="9" selection-end-line="58" selection-end-column="9" />
+        <state relative-caret-position="22">
+          <caret line="8" column="8" lean-forward="false" selection-start-line="8" selection-start-column="8" selection-end-line="8" selection-end-column="8" />
           <folding>
             <element signature="e#0#10#0" expanded="true" />
           </folding>
