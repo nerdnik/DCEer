@@ -47,14 +47,14 @@ def slide_window(txt_wave_file,
         DCETools.embed(txt_wave_file, 'data/embedded_coords.txt',
                        embed_crop, tau, 2, wav_sample_rate, ds_rate=ds_rate)
 
-        DCEPlotter.make_window_fig('data/embedded_coords.txt', txt_wave_file,
+        DCEPlotter.make_window_frame('data/embedded_coords.txt', txt_wave_file,
                                    'frames/frame%03d.png' % i, embed_crop, tau, i)
 
         if  max_frames != 0 and i > max_frames: break
 
 
 def vary_tau(txt_wave_file,
-             tau_lims=(1, 5),
+             tau_lims=(1, 15),
              tau_inc=1,
              m = 2,
              embed_crop=(1, 2),
@@ -63,8 +63,6 @@ def vary_tau(txt_wave_file,
 
     remove_old_frames()
 
-    worm_length_sec = sum(1 for line in open(txt_wave_file)) / wav_sample_rate
-    embed_crop= [t/worm_length_sec for t in embed_crop]
 
     for i, tau in enumerate(np.arange(tau_lims[0], tau_lims[1], tau_inc)):
         print 'frame %i of %i' % (i + 1, int((tau_lims[1] - tau_lims[0]) / tau_inc))
