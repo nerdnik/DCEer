@@ -17,11 +17,11 @@ def embed(input_file_name, output_file_name, embed_crop, tau, m, wav_sample_rate
     # print 'embedding...'
     input_file = open(input_file_name, "r")
     output_file = open(output_file_name, "w")
-    output_file.truncate()  # ??
+    output_file.truncate(0)
     lines = input_file.read().split("\n")
 
     worm_length_sec = len(lines) / wav_sample_rate
-    embed_crop_norm = [t / worm_length_sec for t in embed_crop]
+    embed_crop_norm = [float(t) / worm_length_sec for t in embed_crop]
 
     bounds = len(lines) * np.array(embed_crop_norm)
     lines = lines[int(bounds[0]): int(bounds[1]) : ds_rate]
