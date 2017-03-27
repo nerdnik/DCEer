@@ -6,8 +6,8 @@ from DCEMovies import frames_to_movie
 from DCEMovies import vary_tau, slide_window, compare_multi, compare_vary_tau
 
 
-test = 1
-# test = int(sys.argv[1])
+#test = 1
+test = int(sys.argv[1])
 
 start_time = time.time()
 
@@ -17,32 +17,38 @@ if test == 0:
 
 
 if test == 1:
-    vary_tau('input/34-C135B.txt',
+	note = 67
+	piano = 'C135B' 
+	vary_tau('input/piano_data/%s/%s-%s.txt' % (piano, str(note), piano),
              tau_lims=(1, 100),
-             tau_inc=5,
-             embed_crop=(.27, .5),  # aka window position, in seconds
-             ds_rate=3)             # downsample rate (takes every third sample)
+             tau_inc=10,
+             embed_crop=(.3, .6),  # aka window position, in seconds
+             ds_rate=20)             # downsample rate (takes every third sample)
 
-    frames_to_movie('output/vary_tau_test.mp4', framerate=1)
+	frames_to_movie('output/vary_tau_%s_%s.mp4' % (str(note), piano), framerate=1)
 
 
 if test == 2:
-    slide_window('input/34-C135B.txt',
+	note = 67
+	piano = 'C135B' 
+	slide_window('input/piano_data/%s/%s-%s.txt' % (piano, str(note), piano),
                  window_size=.5,    # seconds
-                 ds_rate=5,
-                 tau=20,
-                 step_size=.1)      # how much to move window each frame
+                 ds_rate=50,
+                 tau=80,
+                 step_size=.5)      # how much to move window each frame
 
-    frames_to_movie('output/slide_window_test.mp4', framerate=1)
+	frames_to_movie('output/slide_window_%s_%s.mp4' % (str(note),piano), framerate=1)
 
 
 if test == 3:
-    compare_vary_tau('input/34-C135B.txt', 'input/34-C134C.txt',
-                     tau_lims=(1, 50),
-                     tau_inc=1,
-                     embed_crop=(2.5, 3))
+	note = 67 
+	compare_vary_tau('input/piano_data/C135B/%s-C135B.txt' % str(note), 'input/piano_data/C134C/%s-C134C.txt' % str(note),
+                     tau_lims=(1, 200),
+                     tau_inc=10,
+                     embed_crop=(3, 4),
+                     ds_rate = 50)
 
-    frames_to_movie('output/compare_tau_test.mp4', framerate=1)
+	frames_to_movie('output/compare_tau_%s.mp4' % str(note), framerate=1)
 
 
 if test == 4:
