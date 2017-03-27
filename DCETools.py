@@ -2,7 +2,7 @@ import os
 import numpy as np
 from scipy.io import wavfile
 
-def wav_to_txt(wav_file_name, output_file_name, crop=[0, 1]):
+def wav_to_txt(wav_file_name, output_file_name, crop=(0, 1)):
     print "converting wav to txt..."
     sampFreq, snd = wavfile.read(wav_file_name)
     bounds = len(snd) * np.array(crop)

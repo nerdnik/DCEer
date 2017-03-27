@@ -6,8 +6,8 @@ from DCEMovies import frames_to_movie
 from DCEMovies import vary_tau, slide_window, compare_multi, compare_vary_tau
 
 
-# test = 3
-test = int(sys.argv[1])
+test = 1
+# test = int(sys.argv[1])
 
 start_time = time.time()
 
