@@ -35,7 +35,7 @@ if test == 2:
 		note = i*10+10
 		piano = 'C134C'
 		slide_window('input/piano_data/%s/%s-%s.txt' % (piano, str(note), piano),
-				window_size=.1,    # seconds
+				window_size=.05*(i+1),    # seconds
 				ds_rate=1,
 				tau= 10,		
 				step_size=.5)      # how much to move window each frame
