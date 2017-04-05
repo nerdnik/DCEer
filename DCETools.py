@@ -1,13 +1,16 @@
 import os
 import numpy as np
+import scipy.fftpack
 from scipy.io import wavfile
+import matplotlib.pyplot as pyplot
 
 def wav_to_txt(wav_file_name, output_file_name, crop=(0, 1)):
     print "converting wav to txt..."
-    sampFreq, snd = wavfile.read(wav_file_name)
-    bounds = len(snd) * np.array(crop)
-    snd = snd[int(bounds[0]):int(bounds[1])]
-    np.savetxt(output_file_name, snd)
+    sampFreq, sig = wavfile.read(wav_file_name)
+    bounds = len(sig) * np.array(crop)
+    sig = sig[int(bounds[0]):int(bounds[1])]
+    np.savetxt(output_file_name, sig)
+
 
 
 def embed(input_file_name, output_file_name, embed_crop, tau, m, wav_sample_rate,
@@ -41,8 +44,23 @@ def embed(input_file_name, output_file_name, embed_crop, tau, m, wav_sample_rate
     output_file.close()
 
 def rename_files():
-    os.chdir('C:\Users\PROGRAMMING\Documents\CU_research\piano_data\C134C')
+    os.chdir('input/viol_data')
     [os.rename(f, f.replace('-consolidated', '')) for f in os.listdir('.') if f.endswith('.wav') or f.endswith('.txt')]
+
+def rename_files_shift_index():
+    os.chdir('input/viol_data')
+    for f in os.listdir('.'):
+        i_in = int(f.split('-')[0])
+        if i_in > 57:
+            base = f.split('-')[1]
+            i_out = i_in + 1
+            os.rename(f, "temp{:02d}-{}".format(i_out, base))
+
+    for f in os.listdir('.'):
+        if 'temp' in f:
+            os.rename(f, f.replace('temp', ''))
+
+
 
 def batch_wav_to_txt(dir_name):
     os.chdir(dir_name)
@@ -50,7 +68,50 @@ def batch_wav_to_txt(dir_name):
 
 
 
+def get_fund_freq(filename, window=(1,2)):
+    samp_freq = 44100
+
+    window = np.array(window) * samp_freq
+    sig = np.loadtxt(filename)
+    sig_crop = sig[window[0]:window[1]]
+    FFT = scipy.fftpack.fft(sig_crop)
+    FFT = 20 * scipy.log10(scipy.absolute(FFT)) # convert to db
+
+    FFT_pos = FFT[1:len(FFT)/2]
+    FFT_neg = FFT[len(FFT)/2:]
+    max_3 = np.argpartition(FFT_pos, -5)[-5:]
+    fund = np.min(max_3)
+    return fund
+
+def plot_power_spectrum(filename, window=(1,2)):
+    from DCEPlotter import plot_waveform
+    samp_freq = 44100
+
+
+    window = np.array(window) * samp_freq
+    sig = np.loadtxt(filename)
+    sig_crop = sig[window[0]:window[1]]
+    FFT = scipy.fftpack.fft(sig_crop)
+    FFT = 20 * scipy.log10(scipy.absolute(FFT)) # convert to db
+    fig, subplots = pyplot.subplots(2, figsize=(6, 3), dpi=300)
+
+
+    FFT_pos = FFT[1:len(FFT)/2]
+    FFT_neg = FFT[len(FFT)/2:]
+
+    subplots[0].set_xscale('log')
+    subplots[0].plot(FFT_pos, c='k', lw=.1)
+    plot_waveform(subplots[1], sig, embed_crop=window)
+
+
+    pyplot.savefig('output/power_spectrum.png')
+    pyplot.close(fig)
+
+
 if __name__ == '__main__':
-    rename_files()
+    print os.getcwd()
+    # rename_files_shift_index()
     # batch_wav_to_txt('C:\Users\PROGRAMMING\Documents\CU_research\piano_data\C134C')
-    # batch_wav_to_txt('C:\Users\PROGRAMMING\Documents\CU_research\piano_data\C135B')
+    # batch_wav_to_txt('input/viol_data')
+    # get_fund_freq('input/viol_data/01-viol.txt', window=(1, 2))
+    # get_fund_freq('input/piano_data/C134C/24-C134C.txt', window=(1, 2))

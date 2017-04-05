@@ -149,3 +149,26 @@ def compare_multi_frame(out_file_name, wave_file_name1, wave_file_name2, frame_n
     pyplot.savefig(out_file_name)
     pyplot.close(fig)
 
+def compare_multi_frame_new(out_file_name, wave_file_name1, wave_file_name2, frame_num, tau, embed_crop, key_info):
+    fig = pyplot.figure(figsize=(12, 9), tight_layout=True)
+    subplot1 = pyplot.subplot2grid((5, 2), (0, 0), rowspan=4)
+    subplot2 = pyplot.subplot2grid((5, 2), (0, 1), rowspan=4)
+    subplot3 = pyplot.subplot2grid((5, 2), (4, 0))
+    subplot4 = pyplot.subplot2grid((5, 2), (4, 1), sharey=subplot3)
+    pyplot.setp(subplot4.get_yticklabels(), visible=False)
+
+    plot_dce(subplot1, 'data/embedded_coords_comp1.txt')
+    plot_dce(subplot2, 'data/embedded_coords_comp2.txt')
+
+    wave_data1, wave_data2 = np.loadtxt(wave_file_name1), np.loadtxt(wave_file_name2)
+    plot_waveform(subplot3, wave_data1, embed_crop)
+    plot_waveform(subplot4, wave_data2, embed_crop)
+
+    subplot1.set_title(wave_file_name1.split('/')[-1])
+    subplot2.set_title(wave_file_name2.split('/')[-1])
+    fig.suptitle('$tau = %d (samples) =  %.5f (s)$, $period =%.5f (s)$, $freq = %d (Hz)$' % tuple(key_info),
+                 bbox={'pad': 5}, fontsize=14)
+
+    pyplot.savefig(out_file_name)
+    pyplot.close(fig)
+

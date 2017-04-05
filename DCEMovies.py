@@ -2,6 +2,7 @@ import DCETools
 import DCEPlotter
 import sys
 import os
+import math
 import numpy as np
 
 def remove_old_frames():
@@ -63,7 +64,6 @@ def vary_tau(txt_wave_file,
 
     remove_old_frames()
 
-
     for i, tau in enumerate(np.arange(tau_lims[0], tau_lims[1], tau_inc)):
         print 'frame %i of %i' % (i + 1, int((tau_lims[1] - tau_lims[0]) / tau_inc))
         DCETools.embed(txt_wave_file, 'data/embedded_coords.txt', embed_crop, tau, m, wav_sample_rate, ds_rate=ds_rate)
@@ -101,12 +101,53 @@ def compare_multi(dir1, dir1_base,
     """makes frames for comparison movie: constant tau, constant, vary in files"""
 
     remove_old_frames()
+    frame_idx = 0
     for i in xrange(1, max_frames):
-        print 'frame', i
+        frame_idx += 1
+        print 'frame', frame_idx
         filename1 = dir1 + "/%02d" % i + dir1_base
         filename2 = dir2 + "/%02d" % i + dir2_base
         DCETools.embed(filename1, 'data/embedded_coords_comp1.txt', embed_crop, tau, m, wav_sample_rate, ds_rate=ds_rate)
         DCETools.embed(filename2, 'data/embedded_coords_comp2.txt', embed_crop, tau, m, wav_sample_rate, ds_rate=ds_rate)
-        DCEPlotter.compare_multi_frame('frames/frame%03d.png' % i, filename1, filename2, i, tau, embed_crop)
+        DCEPlotter.compare_multi_frame('frames/frame%03d.png' % frame_idx, filename1, filename2, i, tau, embed_crop)
+
+
+def compare_multi_auto_tau(dir1, dir1_base,
+                           dir2, dir2_base,
+                           tau_T,
+                           embed_crop=(1, 2),
+                           i_lims=(1, 89),
+                           m=2,
+                           ds_rate=1,
+                           wav_sample_rate=44100):
+    """makes frames for comparison movie: proportional tau, constant, vary in files"""
+    from DCETools import get_fund_freq
+    remove_old_frames()
+    frame_idx = 0
+    for i in xrange(i_lims[0], i_lims[1]):
+        frame_idx +=1
+        print 'frame', frame_idx
+        filename1 = dir1 + "/%02d" % i + dir1_base
+        filename2 = dir2 + "/%02d" % i + dir2_base
+        # print(get_fund_freq(filename1))
+        # print(get_fund_freq(filename2))
+
+        # freq = math.pow(2, (i - 49)/12) * 440    # Hz, ascending index
+        freq = math.pow(2, (40 - float(i))/12) * 440    # Hz, descending index
+
+        period = 1 / freq
+
+
+
+        tau_sec = period * tau_T
+
+        sample_rate = 44100
+        tau_samp = int(tau_sec * sample_rate)
+
+        key_info = [tau_samp, tau_sec, period, freq]
+
+        DCETools.embed(filename1, 'data/embedded_coords_comp1.txt', embed_crop, tau_samp, m, wav_sample_rate, ds_rate=ds_rate)
+        DCETools.embed(filename2, 'data/embedded_coords_comp2.txt', embed_crop, tau_samp, m, wav_sample_rate, ds_rate=ds_rate)
+        DCEPlotter.compare_multi_frame_new('frames/frame%03d.png' % frame_idx, filename1, filename2, i, tau_samp, embed_crop, key_info)
 
 
