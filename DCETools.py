@@ -77,39 +77,48 @@ def get_fund_freq(filename, window=(1,2)):
     FFT = scipy.fftpack.fft(sig_crop)
     FFT = 20 * scipy.log10(scipy.absolute(FFT)) # convert to db
 
-    FFT_pos = FFT[1:len(FFT)/2]
+    FFT_pos = FFT[:len(FFT)/2]
     FFT_neg = FFT[len(FFT)/2:]
+    spec = FFT_pos + FFT_neg[::-1]
     max_3 = np.argpartition(FFT_pos, -5)[-5:]
     fund = np.min(max_3)
     return fund
 
-def plot_power_spectrum(filename, window=(1,2)):
+from scipy.interpolate import interp1d
+
+def plot_power_spectrum(in_file, out_file, crop=(1,2)):
     from DCEPlotter import plot_waveform
     samp_freq = 44100
 
 
-    window = np.array(window) * samp_freq
-    sig = np.loadtxt(filename)
+    window = np.array(crop) * samp_freq
+    sig = np.loadtxt(in_file)
     sig_crop = sig[window[0]:window[1]]
     FFT = scipy.fftpack.fft(sig_crop)
     FFT = 20 * scipy.log10(scipy.absolute(FFT)) # convert to db
     fig, subplots = pyplot.subplots(2, figsize=(6, 3), dpi=300)
 
 
-    FFT_pos = FFT[1:len(FFT)/2]
+    FFT_pos = FFT[:len(FFT)/2]
     FFT_neg = FFT[len(FFT)/2:]
 
+    spec = FFT_pos + FFT_neg[::-1] -100
+
+    # TODO: show grid, more ticks
+
     subplots[0].set_xscale('log')
-    subplots[0].plot(FFT_pos, c='k', lw=.1)
-    plot_waveform(subplots[1], sig, embed_crop=window)
+    subplots[0].set_xlim([20, 20000])
+    subplots[0].plot(spec, c='k', lw=.1)
+    plot_waveform(subplots[1], sig, embed_crop=window_sec)
 
 
-    pyplot.savefig('output/power_spectrum.png')
+    pyplot.savefig('output/power_spectrum_SUMLOGTEST.png')
     pyplot.close(fig)
 
 
 if __name__ == '__main__':
     print os.getcwd()
+    plot_power_spectrum('input/34-C134C.txt')
     # rename_files_shift_index()
     # batch_wav_to_txt('C:\Users\PROGRAMMING\Documents\CU_research\piano_data\C134C')
     # batch_wav_to_txt('input/viol_data')

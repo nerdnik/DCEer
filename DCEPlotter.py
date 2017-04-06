@@ -11,7 +11,7 @@ def plot_dce(subplot, in_file_name):
     dce_data = np.loadtxt(in_file_name)
     x = dce_data[:,0]
     y = dce_data[:,1]
-    subplot.scatter(x, y, color='black', s=1)
+    subplot.scatter(x, y, color='black', s=.1)
     # subplot.set_aspect('equal')
     subplot.set(adjustable='box-forced', aspect='equal')
     subplot.yaxis.set_major_formatter(FormatStrFormatter('%.3f'))
@@ -42,7 +42,7 @@ def plot_waveform(subplot, waveform_data, embed_crop):
     x = np.linspace(0, len(y)/44100., len(y))
 
 
-    subplot.plot(x, y, color='k', zorder=0)
+    subplot.plot(x, y, color='k', zorder=0, lw= .5)
     subplot.axis('tight')
     if math.fabs(embed_crop[0] - embed_crop[1]) < .01:   # how to un-hardcode?
         subplot.axvline(embed_crop[0], color='r', alpha=0.7, zorder=1)
@@ -51,7 +51,7 @@ def plot_waveform(subplot, waveform_data, embed_crop):
 
     subplot.set_xlabel('time (s)')
 
-    subplot.yaxis.set_major_formatter(FormatStrFormatter('%.3f'))
+    subplot.yaxis.set_major_formatter(FormatStrFormatter('%.1f'))
     ylims = subplot.get_ylim()
     subplot.set_yticks([ylims[0], 0, ylims[1]])
 
@@ -149,25 +149,83 @@ def compare_multi_frame(out_file_name, wave_file_name1, wave_file_name2, frame_n
     pyplot.savefig(out_file_name)
     pyplot.close(fig)
 
-def compare_multi_frame_new(out_file_name, wave_file_name1, wave_file_name2, frame_num, tau, embed_crop, key_info):
-    fig = pyplot.figure(figsize=(12, 9), tight_layout=True)
-    subplot1 = pyplot.subplot2grid((5, 2), (0, 0), rowspan=4)
-    subplot2 = pyplot.subplot2grid((5, 2), (0, 1), rowspan=4)
-    subplot3 = pyplot.subplot2grid((5, 2), (4, 0))
-    subplot4 = pyplot.subplot2grid((5, 2), (4, 1), sharey=subplot3)
-    pyplot.setp(subplot4.get_yticklabels(), visible=False)
 
-    plot_dce(subplot1, 'data/embedded_coords_comp1.txt')
-    plot_dce(subplot2, 'data/embedded_coords_comp2.txt')
+def plot_titlebox(subplot, title_info):
+
+    # subplot.axis('tight')
+    subplot.axis('off')
+    # subplot.xaxis.set_ticks([])
+    # subplot.yaxis.set_ticks([])
+    subplot.set_xlim([0, 1])
+    subplot.set_ylim([0, 1])
+
+    info_main, info1, info2 = title_info[0], title_info[1], title_info[2]
+
+    col_widths = [1, .75]
+
+    table_main = subplot.table(
+        cellText=info_main,
+        colWidths=col_widths,
+        bbox=[0, .8, 1, .2],  # x0, y0, width, height
+    )
+
+    header_1 = subplot.table(
+        cellText=[[info1[0].split('/')[-1]]],
+        bbox=[0, .6, 1, .1],
+        cellLoc='center'
+    )
+
+    table_1 = subplot.table(
+        cellText=info1[1:],
+        colWidths=col_widths,
+        bbox=[0, .5, 1, .1],
+    )
+
+    header_2 = subplot.table(
+        cellText=[[info2[0].split('/')[-1]]],
+        bbox=[0, .3, 1, .1],
+        cellLoc='center'
+
+    )
+
+    table_2 = subplot.table(
+        cellText=info2[1:],
+        colWidths=col_widths,
+        bbox=[0, .2, 1, .1],
+    )
+
+    for table in [header_1, header_2]:
+        table.auto_set_font_size(False)
+        table.set_fontsize(10)
+
+    for table in [table_main, table_1, table_2]:
+        table.auto_set_font_size(False)
+        table.set_fontsize(8)
+
+
+
+
+def compare_multi_frame_new(out_file_name, wave_file_name1, wave_file_name2, frame_num, tau, embed_crop, title_info, dpi):
+    fig = pyplot.figure(figsize=(11, 5), tight_layout=True, dpi=dpi)
+    titlebox = pyplot.subplot2grid((5, 11), (0, 0), rowspan=5, colspan=3)
+    dce1 = pyplot.subplot2grid((5, 11), (0, 3), rowspan=4, colspan=4)
+    dce2 = pyplot.subplot2grid((5, 11), (0, 7), rowspan=4, colspan=4)
+    wave1 = pyplot.subplot2grid((5, 11), (4, 3), colspan=4)
+    wave2 = pyplot.subplot2grid((5, 11), (4, 7), colspan=4, sharey=wave1)
+    pyplot.setp(wave2.get_yticklabels(), visible=False)
+
+    plot_titlebox(titlebox, title_info)
+
+    plot_dce(dce1, 'data/embedded_coords_comp1.txt')
+    plot_dce(dce2, 'data/embedded_coords_comp2.txt')
 
     wave_data1, wave_data2 = np.loadtxt(wave_file_name1), np.loadtxt(wave_file_name2)
-    plot_waveform(subplot3, wave_data1, embed_crop)
-    plot_waveform(subplot4, wave_data2, embed_crop)
+    plot_waveform(wave1, wave_data1, embed_crop)
+    plot_waveform(wave2, wave_data2, embed_crop)
 
-    subplot1.set_title(wave_file_name1.split('/')[-1])
-    subplot2.set_title(wave_file_name2.split('/')[-1])
-    fig.suptitle('$tau = %d (samples) =  %.5f (s)$, $period =%.5f (s)$, $freq = %d (Hz)$' % tuple(key_info),
-                 bbox={'pad': 5}, fontsize=14)
+    dce1.set_title(wave_file_name1.split('/')[-1])
+    dce2.set_title(wave_file_name2.split('/')[-1])
+
 
     pyplot.savefig(out_file_name)
     pyplot.close(fig)

@@ -1,13 +1,15 @@
 import sys
 import time
-from DCETools import wav_to_txt, batch_wav_to_txt
+from DCETools import wav_to_txt, batch_wav_to_txt, plot_power_spectrum
 from DCEPlotter import make_window_frame
 from DCEMovies import frames_to_movie
 from DCEMovies import vary_tau, slide_window, compare_multi, compare_vary_tau, compare_multi_auto_tau
 
 
-# test = 6
-test = int(sys.argv[1])
+test = 7
+# test = int(sys.argv[1])
+
+print 'running test %d...' % test
 
 start_time = time.time()
 
@@ -59,7 +61,7 @@ if test == 4:
     dir1 = "input/piano_data/C134C"
     dir2 = "input/piano_data/C135B"
     tau = 10
-    compare_multi(dir1,'-C134C.txt',
+    compare_multi(dir1, '-C134C.txt',
                   dir2, '-C135B.txt',
                   tau,
                   embed_crop=(.5, .7))
@@ -80,18 +82,25 @@ if test == 5:
 
     frames_to_movie('output/compare_auto_tau__1_pi_t5.mp4', framerate=1)
 
-if test == 6:
-    dir1 = "input/piano_data/C134C"
-    dir2 = "input/viol_data"
-    tau_T = 1 / math.pi
-    compare_multi_auto_tau(dir1, '-C134C.txt',
-                           dir2, '-viol.txt',
+
+if test == 7:
+    dir1, base1 = 'input/piano_data/C134C', '-C134C.txt'
+    dir2, base2 = "input/viol_data", '-viol.txt'
+
+    window = (1, 1.2)
+    tau_T = .25     # set tau / period ratio
+
+    compare_multi_auto_tau(dir1, base1,
+                           dir2, base2,
                            tau_T,
-                           embed_crop=(1, 1.2),
+                           embed_crop=window,
                            ds_rate=1,
-                           i_lims=(36, 64)  # specify note range
+                           i_lims=(36, 64),  # specify note range
+                           dpi=250
                            )
 
-    frames_to_movie('output/viol_test_align.mp4', framerate=1)
+    frames_to_movie('output/viol_test_7_tau.25T.mp4', framerate=1)
+
+
 
 print("time elapsed: %d seconds" % (time.time() - start_time))

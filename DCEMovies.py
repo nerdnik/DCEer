@@ -119,7 +119,8 @@ def compare_multi_auto_tau(dir1, dir1_base,
                            i_lims=(1, 89),
                            m=2,
                            ds_rate=1,
-                           wav_sample_rate=44100):
+                           wav_sample_rate=44100,
+                           dpi=200):
     """makes frames for comparison movie: proportional tau, constant, vary in files"""
     from DCETools import get_fund_freq
     remove_old_frames()
@@ -129,25 +130,39 @@ def compare_multi_auto_tau(dir1, dir1_base,
         print 'frame', frame_idx
         filename1 = dir1 + "/%02d" % i + dir1_base
         filename2 = dir2 + "/%02d" % i + dir2_base
-        # print(get_fund_freq(filename1))
-        # print(get_fund_freq(filename2))
 
         # freq = math.pow(2, (i - 49)/12) * 440    # Hz, ascending index
         freq = math.pow(2, (40 - float(i))/12) * 440    # Hz, descending index
-
         period = 1 / freq
-
-
-
         tau_sec = period * tau_T
-
         sample_rate = 44100
         tau_samp = int(tau_sec * sample_rate)
 
-        key_info = [tau_samp, tau_sec, period, freq]
+        info_main = [
+            ['tau (samples)', '{:d}'.format(tau_samp)],
+            ['tau (sec)', '{:.4f}'.format(tau_sec)],
+            ['period (sec)', '{:.4f}'.format(period)],
+            ['f (Hz) [ideal]', '{:.1f}'.format(freq)]
+        ]
+
+        info_1 = [
+            filename1,
+            ['f (Hz) [detected]', '{:.1f}'.format(embed_crop[0], embed_crop[1])],
+            ['embed lims (s)', '({:.2f}, {:.2f})'.format(embed_crop[0], embed_crop[1])]
+
+        ]
+
+        info_2 = [
+            filename2,
+            ['f (Hz) [detected]', '{:.1f}'.format(embed_crop[0], embed_crop[1])],
+            ['embed lims (s)', '({:.2f}, {:.2f})'.format(embed_crop[0], embed_crop[1])]
+        ]
+
+        title_info = [info_main, info_1, info_2]
+
 
         DCETools.embed(filename1, 'data/embedded_coords_comp1.txt', embed_crop, tau_samp, m, wav_sample_rate, ds_rate=ds_rate)
         DCETools.embed(filename2, 'data/embedded_coords_comp2.txt', embed_crop, tau_samp, m, wav_sample_rate, ds_rate=ds_rate)
-        DCEPlotter.compare_multi_frame_new('frames/frame%03d.png' % frame_idx, filename1, filename2, i, tau_samp, embed_crop, key_info)
+        DCEPlotter.compare_multi_frame_new('frames/frame%03d.png' % frame_idx, filename1, filename2, i, tau_samp, embed_crop, title_info, dpi)
 
 
