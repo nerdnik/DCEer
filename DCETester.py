@@ -87,8 +87,8 @@ if test == 7:
     dir1, base1 = 'input/piano_data/C134C', '-C134C.txt'
     dir2, base2 = "input/viol_data", '-viol.txt'
 
-    window = (1, 1.2)
-    tau_T = .25     # set tau / period ratio
+    window = (1, 1.5)
+    tau_T = 1/math.pi     # set tau / period ratio
 
     compare_multi_auto_tau(dir1, base1,
                            dir2, base2,
@@ -100,6 +100,13 @@ if test == 7:
                            )
 
     frames_to_movie('output/viol_test_7_tau.25T.mp4', framerate=1)
+
+if test == 8:
+    # still trying to figure out exactly how the units should work here
+    plot_power_spectrum('input/piano_data/C134C/34-C134C.txt',
+                        'output/power_spectrum_34-C134C.png',
+                        crop=(1, 2),    # window for analysis (seconds)
+                        )
 
 
 

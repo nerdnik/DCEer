@@ -68,51 +68,67 @@ def batch_wav_to_txt(dir_name):
 
 
 
-def get_fund_freq(filename, window=(1,2)):
-    samp_freq = 44100
-
+def get_fund_freq(filename, window=(1, 2)):
+    samp_freq = 44100.
+    window_sec = window
     window = np.array(window) * samp_freq
     sig = np.loadtxt(filename)
-    sig_crop = sig[window[0]:window[1]]
-    FFT = scipy.fftpack.fft(sig_crop)
+    sig_crop = sig[int(window[0]): int(window[1])]
+
+    window_len_sec = window_sec[1] - window_sec[0]
+
+    spec_prec = int(100000/(samp_freq * window_len_sec))
+
+
+    FFT = scipy.fftpack.fft(sig_crop, len(sig_crop) * spec_prec)
+
+    FFT_x = scipy.fftpack.fftfreq(sig_crop.size * spec_prec, d=1/samp_freq)
+
     FFT = 20 * scipy.log10(scipy.absolute(FFT)) # convert to db
 
-    FFT_pos = FFT[:len(FFT)/2]
-    FFT_neg = FFT[len(FFT)/2:]
+    FFT_pos = FFT[1:len(FFT)/2]
+    FFT_neg = FFT[(len(FFT)/2) + 1:]
     spec = FFT_pos + FFT_neg[::-1]
-    max_3 = np.argpartition(FFT_pos, -5)[-5:]
-    fund = np.min(max_3)
+    # spec = FFT_pos
+
+    n = spec_prec
+    max_idxs = np.argpartition(spec, -n)[-n:]
+    fund_idx = np.min(max_idxs)
+    fund = FFT_x[fund_idx]
     return fund
 
-from scipy.interpolate import interp1d
+# from scipy.interpolate import interp1d
 
 def plot_power_spectrum(in_file, out_file, crop=(1,2)):
     from DCEPlotter import plot_waveform
-    samp_freq = 44100
+    samp_freq = 44100.
 
 
     window = np.array(crop) * samp_freq
     sig = np.loadtxt(in_file)
-    sig_crop = sig[window[0]:window[1]]
+    sig_crop = sig[int(window[0]):int(window[1])]
     FFT = scipy.fftpack.fft(sig_crop)
     FFT = 20 * scipy.log10(scipy.absolute(FFT)) # convert to db
-    fig, subplots = pyplot.subplots(2, figsize=(6, 3), dpi=300)
+    FFT_x = scipy.fftpack.fftfreq(len(FFT), d=1 / samp_freq)
+
+    fig, subplots = pyplot.subplots(2, figsize=(6, 3), dpi=300, tight_layout=True)
 
 
-    FFT_pos = FFT[:len(FFT)/2]
-    FFT_neg = FFT[len(FFT)/2:]
-
-    spec = FFT_pos + FFT_neg[::-1] -100
+    FFT_pos = FFT[1:len(FFT)/2]
+    FFT_neg = FFT[(len(FFT)/2) + 1:]
+    spec = FFT_pos + FFT_neg[::-1]
 
     # TODO: show grid, more ticks
 
     subplots[0].set_xscale('log')
     subplots[0].set_xlim([20, 20000])
-    subplots[0].plot(spec, c='k', lw=.1)
-    plot_waveform(subplots[1], sig, embed_crop=window_sec)
+    subplots[0].plot(FFT_x[1:len(FFT_x)/2], spec, c='k', lw=.1)
+    subplots[0].set_xlabel('frequency (Hz)')
+
+    plot_waveform(subplots[1], sig, embed_crop=crop)
 
 
-    pyplot.savefig('output/power_spectrum_SUMLOGTEST.png')
+    pyplot.savefig(out_file)
     pyplot.close(fig)
 
 

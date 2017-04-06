@@ -111,6 +111,9 @@ def compare_multi(dir1, dir1_base,
         DCETools.embed(filename2, 'data/embedded_coords_comp2.txt', embed_crop, tau, m, wav_sample_rate, ds_rate=ds_rate)
         DCEPlotter.compare_multi_frame('frames/frame%03d.png' % frame_idx, filename1, filename2, i, tau, embed_crop)
 
+from DCETools import get_fund_freq
+from DCETools import plot_power_spectrum
+
 
 def compare_multi_auto_tau(dir1, dir1_base,
                            dir2, dir2_base,
@@ -122,11 +125,10 @@ def compare_multi_auto_tau(dir1, dir1_base,
                            wav_sample_rate=44100,
                            dpi=200):
     """makes frames for comparison movie: proportional tau, constant, vary in files"""
-    from DCETools import get_fund_freq
     remove_old_frames()
     frame_idx = 0
     for i in xrange(i_lims[0], i_lims[1]):
-        frame_idx +=1
+        frame_idx += 1
         print 'frame', frame_idx
         filename1 = dir1 + "/%02d" % i + dir1_base
         filename2 = dir2 + "/%02d" % i + dir2_base
@@ -145,16 +147,21 @@ def compare_multi_auto_tau(dir1, dir1_base,
             ['f (Hz) [ideal]', '{:.1f}'.format(freq)]
         ]
 
+        f1 = get_fund_freq(filename1, embed_crop)
+        # plot_power_spectrum(filename1, 'output/PS_frame' + str(i) + '.png')
+
         info_1 = [
             filename1,
-            ['f (Hz) [detected]', '{:.1f}'.format(embed_crop[0], embed_crop[1])],
+            ['f (Hz) [detected]', '{:.1f}'.format(f1)],
             ['embed lims (s)', '({:.2f}, {:.2f})'.format(embed_crop[0], embed_crop[1])]
 
         ]
 
+        f2 = get_fund_freq(filename2, embed_crop)
+
         info_2 = [
             filename2,
-            ['f (Hz) [detected]', '{:.1f}'.format(embed_crop[0], embed_crop[1])],
+            ['f (Hz) [detected]', '{:.1f}'.format(f2)],
             ['embed lims (s)', '({:.2f}, {:.2f})'.format(embed_crop[0], embed_crop[1])]
         ]
 
