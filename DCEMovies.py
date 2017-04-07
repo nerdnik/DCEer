@@ -133,31 +133,39 @@ def compare_multi_auto_tau(dir1, dir1_base,
         filename1 = dir1 + "/%02d" % i + dir1_base
         filename2 = dir2 + "/%02d" % i + dir2_base
 
-        # freq = math.pow(2, (i - 49)/12) * 440    # Hz, ascending index
-        freq = math.pow(2, (40 - float(i))/12) * 440    # Hz, descending index
-        period = 1 / freq
+        # ideal_freq = math.pow(2, (i - 49)/12) * 440    # Hz, ascending index
+        ideal_freq = math.pow(2, (40 - float(i))/12) * 440    # Hz, descending index
+        period = 1 / ideal_freq
         tau_sec = period * tau_T
         sample_rate = 44100
         tau_samp = int(tau_sec * sample_rate)
 
+        embed_len_sec = (abs(float(embed_crop[1] - float(embed_crop[0]))))
+        cycles = embed_len_sec/period
+        num_samples = embed_len_sec * wav_sample_rate / ds_rate
+
         info_main = [
-            ['tau (samples)', '{:d}'.format(tau_samp)],
+            # ['tau (samples)', '{:d}'.format(tau_samp)],
             ['tau (sec)', '{:.4f}'.format(tau_sec)],
             ['period (sec)', '{:.4f}'.format(period)],
-            ['f (Hz) [ideal]', '{:.1f}'.format(freq)]
+            ['f (Hz) [ideal]', '{:.1f}'.format(ideal_freq)],
+            ['tau/period', '{:.4f}'.format(tau_T)],
+            ['cycles', '{:.4f}'.format(cycles)],
+            ['num samples', '{:d}'.format(int(num_samples))],
+            ['ds rate', '{:d}'.format(ds_rate)],
         ]
 
-        f1 = get_fund_freq(filename1, embed_crop)
-        # plot_power_spectrum(filename1, 'output/PS_frame' + str(i) + '.png')
+        f1 = get_fund_freq(filename1, ideal_freq, embed_crop)
 
         info_1 = [
             filename1,
             ['f (Hz) [detected]', '{:.1f}'.format(f1)],
-            ['embed lims (s)', '({:.2f}, {:.2f})'.format(embed_crop[0], embed_crop[1])]
+            ['embed lims (s)', '({:.2f}, {:.2f})'.format(embed_crop[0], embed_crop[1])],
+
 
         ]
 
-        f2 = get_fund_freq(filename2, embed_crop)
+        f2 = get_fund_freq(filename2, ideal_freq, embed_crop)
 
         info_2 = [
             filename2,

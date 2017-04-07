@@ -1,3 +1,4 @@
+import sys
 import os
 import numpy as np
 import scipy.fftpack
@@ -68,45 +69,66 @@ def batch_wav_to_txt(dir_name):
 
 
 
-def get_fund_freq(filename, window=(1, 2)):
+def get_fund_freq(filename, expected, window=(1, 2), tol=10):
     samp_freq = 44100.
     window_sec = window
     window = np.array(window) * samp_freq
     sig = np.loadtxt(filename)
+
+    # sig_lowpass = butter_lowpass_filter(sig, 20, samp_freq, order=1)
+
     sig_crop = sig[int(window[0]): int(window[1])]
 
     window_len_sec = window_sec[1] - window_sec[0]
-
-    spec_prec = int(100000/(samp_freq * window_len_sec))
-
-
-    FFT = scipy.fftpack.fft(sig_crop, len(sig_crop) * spec_prec)
+    spec_prec = int(100000 / (samp_freq * window_len_sec))  # hz ?
 
     FFT_x = scipy.fftpack.fftfreq(sig_crop.size * spec_prec, d=1/samp_freq)
 
+    FFT = scipy.fftpack.fft(sig_crop, len(sig_crop) * spec_prec)
     FFT = 20 * scipy.log10(scipy.absolute(FFT)) # convert to db
-
     FFT_pos = FFT[1:len(FFT)/2]
     FFT_neg = FFT[(len(FFT)/2) + 1:]
-    spec = FFT_pos + FFT_neg[::-1]
-    # spec = FFT_pos
 
-    n = spec_prec
-    max_idxs = np.argpartition(spec, -n)[-n:]
-    fund_idx = np.min(max_idxs)
-    fund = FFT_x[fund_idx]
+    spec = FFT_pos + FFT_neg[::-1]
+    spec_x = FFT_x[1:len(FFT_x)/2]
+
+    freq_window_idx = [i for i, x in enumerate(spec_x) if np.abs(expected - x) < tol]
+    if len(freq_window_idx) ==0:
+        print("ERROR: No fundamental frequency found. Increase 'tol'.")
+        sys.exit()
+    freq_window_freq = spec_x[freq_window_idx]
+    freq_window_amp = spec[freq_window_idx]
+    # plot_spec(spec, spec_x, 'lowpass.png')
+
+    max_idx = np.argmax(freq_window_amp)
+    fund = freq_window_freq[max_idx]
     return fund
 
 # from scipy.interpolate import interp1d
 
-def plot_power_spectrum(in_file, out_file, crop=(1,2)):
+def plot_spec(spec_x, spec, out_file):
+    fig = pyplot.figure()
+    plt = fig.add_subplot(111)
+    plt.set_xscale('log')
+    plt.set_xlim([20, 20000])
+    plt.plot(spec, spec_x, c='k', lw=.1)
+    plt.set_xlabel('frequency (Hz)')
+    plt.grid()
+
+
+    pyplot.savefig(out_file)
+    pyplot.close(fig)
+
+
+def plot_power_spectrum(sig, out_file, crop=(1,2)):
     from DCEPlotter import plot_waveform
     samp_freq = 44100.
 
-
-    window = np.array(crop) * samp_freq
-    sig = np.loadtxt(in_file)
-    sig_crop = sig[int(window[0]):int(window[1])]
+    if crop != 'none':
+        window = np.array(crop) * samp_freq
+        sig_crop = sig[int(window[0]):int(window[1])]
+    else:
+        sig_crop = sig
     FFT = scipy.fftpack.fft(sig_crop)
     FFT = 20 * scipy.log10(scipy.absolute(FFT)) # convert to db
     FFT_x = scipy.fftpack.fftfreq(len(FFT), d=1 / samp_freq)
@@ -134,7 +156,6 @@ def plot_power_spectrum(in_file, out_file, crop=(1,2)):
 
 if __name__ == '__main__':
     print os.getcwd()
-    plot_power_spectrum('input/34-C134C.txt')
     # rename_files_shift_index()
     # batch_wav_to_txt('C:\Users\PROGRAMMING\Documents\CU_research\piano_data\C134C')
     # batch_wav_to_txt('input/viol_data')

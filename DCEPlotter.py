@@ -162,36 +162,52 @@ def plot_titlebox(subplot, title_info):
     info_main, info1, info2 = title_info[0], title_info[1], title_info[2]
 
     col_widths = [1, .75]
+    col_heights = .05
+    spacing_h = .1
+    header_h = .1
+
+    h2 = col_heights * (len(info2)-1)
+    h1 = col_heights * (len(info1) - 1)
+    h_main = col_heights * len(info_main)
+
+    pos2 = 0
+    pos1 = pos2 + h2 + header_h + spacing_h
+    pos_main = pos1 + h1 + header_h + spacing_h
+
+
 
     table_main = subplot.table(
         cellText=info_main,
         colWidths=col_widths,
-        bbox=[0, .8, 1, .2],  # x0, y0, width, height
+        bbox=[0, pos_main, 1, h_main],  # x0, y0, width, height
     )
+
+
 
     header_1 = subplot.table(
         cellText=[[info1[0].split('/')[-1]]],
-        bbox=[0, .6, 1, .1],
+        bbox=[0, pos1 + header_h, 1, header_h],
         cellLoc='center'
     )
+
 
     table_1 = subplot.table(
         cellText=info1[1:],
         colWidths=col_widths,
-        bbox=[0, .5, 1, .1],
+        bbox=[0, pos1, 1, h1],
     )
+
 
     header_2 = subplot.table(
         cellText=[[info2[0].split('/')[-1]]],
-        bbox=[0, .3, 1, .1],
+        bbox=[0, h2, 1, header_h],
         cellLoc='center'
 
     )
-
     table_2 = subplot.table(
         cellText=info2[1:],
         colWidths=col_widths,
-        bbox=[0, .2, 1, .1],
+        bbox=[0, pos2, 1, h2],
     )
 
     for table in [header_1, header_2]:
