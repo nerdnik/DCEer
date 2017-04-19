@@ -1,31 +1,11 @@
 import DCETools
 import DCEPlotter
-import sys
-import os
-import math
 import numpy as np
 
-def remove_old_frames():
-    os.chdir('frames')
-    for f in os.listdir("."):
-        if f.endswith(".png"):
-            os.remove(f)
-    os.chdir('..')
+from DCEMovies_helper import remove_old_frames
+from DCEMovies_helper import prep_save_worms_single, save_worms_single, prep_save_worms_double, save_worms_double
+from DCEMovies_helper import get_info_ideal, get_info_real
 
-
-def frames_to_movie(out_file_name, framerate=2):
-    print 'building movie...'
-    if os.path.exists(out_file_name):
-        overwrite = raw_input(out_file_name + " already exists. Overwrite? (y/n)\n")
-        if overwrite == "y":
-            pass
-        else:
-            sys.exit()
-
-    in_str = ('ffmpeg -y -framerate %i ' % framerate) + '-i frames/frame%03d.png'
-    out_str = (' -r %d ' % 24) + out_file_name
-    os.system(in_str + out_str)
-    print os.getcwd() + ('\\' if os.name == 'nt' else '/') + out_file_name
 
 
 def slide_window(txt_wave_file,
@@ -34,7 +14,11 @@ def slide_window(txt_wave_file,
                  tau=10,
                  ds_rate=1,
                  max_frames=0,      # 0 for disabled
-                 wav_sample_rate=44100):
+                 wav_sample_rate=44100,
+                 save_worms=True):
+
+    if save_worms: prep_save_worms_single()
+
 
     remove_old_frames()
 
@@ -42,16 +26,17 @@ def slide_window(txt_wave_file,
     num_frames = worm_length/step_size
 
     for i, start in enumerate(np.arange(0, worm_length, step_size)):
-        print 'building frame %i of %i' % (i, num_frames)
+        print 'frame %i of %i' % (i, num_frames)
 
         embed_crop = [start, start + window_size]
-        DCETools.embed(txt_wave_file, 'data/embedded_coords.txt',
-                       embed_crop, tau, 2, wav_sample_rate, ds_rate=ds_rate)
+        DCETools.embed(txt_wave_file, 'data/embedded_coords.txt', embed_crop, tau, 2, wav_sample_rate, ds_rate=ds_rate)
 
-        DCEPlotter.make_window_frame('data/embedded_coords.txt', txt_wave_file,
-                                   'frames/frame%03d.png' % i, embed_crop, tau, i)
+        if save_worms: save_worms_single('{:d}-{}'.format(i, txt_wave_file), i,  tau, embed_crop)
 
-        if  max_frames != 0 and i > max_frames: break
+
+        DCEPlotter.make_window_frame('data/embedded_coords.txt', txt_wave_file, 'frames/frame%03d.png' % i, embed_crop, tau, i)
+
+        if max_frames != 0 and i > max_frames: break
 
 
 def vary_tau(txt_wave_file,
@@ -60,15 +45,21 @@ def vary_tau(txt_wave_file,
              m = 2,
              embed_crop=(1, 2),
              wav_sample_rate=44100,
-             ds_rate=1):
+             ds_rate=1,
+             save_worms=True):
 
     remove_old_frames()
+
+    if save_worms: prep_save_worms_single()
 
     for i, tau in enumerate(np.arange(tau_lims[0], tau_lims[1], tau_inc)):
         print 'frame %i of %i' % (i + 1, int((tau_lims[1] - tau_lims[0]) / tau_inc))
         DCETools.embed(txt_wave_file, 'data/embedded_coords.txt', embed_crop, tau, m, wav_sample_rate, ds_rate=ds_rate)
-        DCEPlotter.make_window_frame('data/embedded_coords.txt', txt_wave_file,
-                                   'frames/frame%03d.png' % i, embed_crop, tau, i)
+
+        if save_worms: save_worms_single('{:d}-{}'.format(i, txt_wave_file), i, tau, embed_crop)
+
+
+        DCEPlotter.make_window_frame('data/embedded_coords.txt', txt_wave_file, 'frames/frame%03d.png' % i, embed_crop, tau, i)
 
 
 def compare_vary_tau(txt_wave_file1,
@@ -78,14 +69,21 @@ def compare_vary_tau(txt_wave_file1,
                      embed_crop=(1, 2),
                      ds_rate=1,
                      m=2,
-                     wav_sample_rate=44100):
+                     wav_sample_rate=44100,
+                     save_worms=True):
 
     remove_old_frames()
 
+    if save_worms: prep_save_worms_double()
+
     for i, tau in enumerate(np.arange(tau_lims[0], tau_lims[1], tau_inc)):
-        print 'building frame %i of %i' % (i + 1, int((tau_lims[1] - tau_lims[0]) / tau_inc))
+        print 'frame %i of %i' % (i + 1, int((tau_lims[1] - tau_lims[0]) / tau_inc))
+
         DCETools.embed(txt_wave_file1, 'data/embedded_coords_comp1.txt', embed_crop, tau, m, wav_sample_rate, ds_rate=ds_rate)
         DCETools.embed(txt_wave_file2, 'data/embedded_coords_comp2.txt', embed_crop, tau, m, wav_sample_rate, ds_rate=ds_rate)
+
+        if save_worms: save_worms_double('{:d}-txt_wave_file1'.format(i), '{:d}-txt_wave_file2'.format(i), i, tau, tau, embed_crop)
+
         DCEPlotter.compare_vary_tau_frame('frames/frame%03d.png' % i, txt_wave_file1, txt_wave_file2, i, tau, embed_crop)
 
 
@@ -97,8 +95,10 @@ def compare_multi(dir1, dir1_base,
                   max_frames=89,
                   m=2,
                   ds_rate=1,
-                  wav_sample_rate=44100):
+                  wav_sample_rate=44100,
+                  save_worms=True):
     """makes frames for comparison movie: constant tau, constant, vary in files"""
+    if save_worms: prep_save_worms_double()
 
     remove_old_frames()
     frame_idx = 0
@@ -107,77 +107,61 @@ def compare_multi(dir1, dir1_base,
         print 'frame', frame_idx
         filename1 = dir1 + "/%02d" % i + dir1_base
         filename2 = dir2 + "/%02d" % i + dir2_base
+
         DCETools.embed(filename1, 'data/embedded_coords_comp1.txt', embed_crop, tau, m, wav_sample_rate, ds_rate=ds_rate)
         DCETools.embed(filename2, 'data/embedded_coords_comp2.txt', embed_crop, tau, m, wav_sample_rate, ds_rate=ds_rate)
-        DCEPlotter.compare_multi_frame('frames/frame%03d.png' % frame_idx, filename1, filename2, i, tau, embed_crop)
 
-from DCETools import get_fund_freq
-from DCETools import plot_power_spectrum
+        if save_worms: save_worms_double(filename1, filename2, i, tau, tau, embed_crop)
+
+        DCEPlotter.compare_multi_frame('frames/frame%03d.png' % frame_idx, filename1, filename2, i, tau, embed_crop)
 
 
 def compare_multi_auto_tau(dir1, dir1_base,
                            dir2, dir2_base,
                            tau_T,
+                           tau_detect_f = True,
                            embed_crop=(1, 2),
                            i_lims=(1, 89),
                            m=2,
                            ds_rate=1,
                            wav_sample_rate=44100,
-                           dpi=200):
+                           dpi=200,
+                           save_worms=True):
     """makes frames for comparison movie: proportional tau, constant, vary in files"""
+
+    if save_worms: prep_save_worms_double()
+
     remove_old_frames()
     frame_idx = 0
+
     for i in xrange(i_lims[0], i_lims[1]):
+
         frame_idx += 1
         print 'frame', frame_idx
         filename1 = dir1 + "/%02d" % i + dir1_base
         filename2 = dir2 + "/%02d" % i + dir2_base
 
-        # ideal_freq = math.pow(2, (i - 49)/12) * 440    # Hz, ascending index
-        ideal_freq = math.pow(2, (40 - float(i))/12) * 440    # Hz, descending index
-        period = 1 / ideal_freq
-        tau_sec = period * tau_T
-        sample_rate = 44100
-        tau_samp = int(tau_sec * sample_rate)
+        if tau_detect_f:
+            info = get_info_real(tau_T, embed_crop, i, ds_rate, wav_sample_rate, filename1, filename2)
 
-        embed_len_sec = (abs(float(embed_crop[1] - float(embed_crop[0]))))
-        cycles = embed_len_sec/period
-        num_samples = embed_len_sec * wav_sample_rate / ds_rate
+            tau_1 = info['tau_1']
+            tau_2 = info['tau_2']
 
-        info_main = [
-            # ['tau (samples)', '{:d}'.format(tau_samp)],
-            ['tau (sec)', '{:.4f}'.format(tau_sec)],
-            ['period (sec)', '{:.4f}'.format(period)],
-            ['f (Hz) [ideal]', '{:.1f}'.format(ideal_freq)],
-            ['tau/period', '{:.4f}'.format(tau_T)],
-            ['cycles', '{:.4f}'.format(cycles)],
-            ['num samples', '{:d}'.format(int(num_samples))],
-            ['ds rate', '{:d}'.format(ds_rate)],
-        ]
+            DCETools.embed(filename1, 'data/embedded_coords_comp1.txt', embed_crop, tau_1, m, wav_sample_rate, ds_rate=ds_rate)
+            DCETools.embed(filename2, 'data/embedded_coords_comp2.txt', embed_crop, tau_2, m, wav_sample_rate, ds_rate=ds_rate)
 
-        f1 = get_fund_freq(filename1, ideal_freq, embed_crop)
+            if save_worms: save_worms_double(filename1, filename2, i, tau_1, tau_2, embed_crop)
 
-        info_1 = [
-            filename1,
-            ['f (Hz) [detected]', '{:.1f}'.format(f1)],
-            ['embed lims (s)', '({:.2f}, {:.2f})'.format(embed_crop[0], embed_crop[1])],
+        else:
+            info = get_info_ideal(tau_T, embed_crop, i, ds_rate, wav_sample_rate, filename1, filename2)
+            tau = info['tau']
+
+            DCETools.embed(filename1, 'data/embedded_coords_comp1.txt', embed_crop, tau, m, wav_sample_rate, ds_rate=ds_rate)
+            DCETools.embed(filename2, 'data/embedded_coords_comp2.txt', embed_crop, tau, m, wav_sample_rate, ds_rate=ds_rate)
+
+            if save_worms: save_worms_double(filename1, filename2, i, tau, tau, embed_crop)
 
 
-        ]
-
-        f2 = get_fund_freq(filename2, ideal_freq, embed_crop)
-
-        info_2 = [
-            filename2,
-            ['f (Hz) [detected]', '{:.1f}'.format(f2)],
-            ['embed lims (s)', '({:.2f}, {:.2f})'.format(embed_crop[0], embed_crop[1])]
-        ]
-
-        title_info = [info_main, info_1, info_2]
-
-
-        DCETools.embed(filename1, 'data/embedded_coords_comp1.txt', embed_crop, tau_samp, m, wav_sample_rate, ds_rate=ds_rate)
-        DCETools.embed(filename2, 'data/embedded_coords_comp2.txt', embed_crop, tau_samp, m, wav_sample_rate, ds_rate=ds_rate)
-        DCEPlotter.compare_multi_frame_new('frames/frame%03d.png' % frame_idx, filename1, filename2, i, tau_samp, embed_crop, title_info, dpi)
+        DCEPlotter.compare_multi_frame_new('frames/frame%03d.png' % frame_idx, filename1, filename2, i, embed_crop, info, dpi)
 
 

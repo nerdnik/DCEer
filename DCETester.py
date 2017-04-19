@@ -2,11 +2,11 @@ import sys
 import time
 from DCETools import wav_to_txt, batch_wav_to_txt, plot_power_spectrum
 from DCEPlotter import make_window_frame
-from DCEMovies import frames_to_movie
+from DCEMovies_helper import frames_to_movie
 from DCEMovies import vary_tau, slide_window, compare_multi, compare_vary_tau, compare_multi_auto_tau
 
 
-test = 7
+test = 2
 # test = int(sys.argv[1])
 
 print 'running test %d...' % test
@@ -107,6 +107,29 @@ if test == 8:
                         'output/power_spectrum_34-C134C.png',
                         crop=(1, 2),    # window for analysis (seconds)
                         )
+
+
+if test == 9:
+    dir1, base1 = 'input/piano_data/C134C', '-C134C.txt'
+    dir2, base2 = "input/viol_data", '-viol.txt'
+
+    window = (1, 1.5)
+    tau_T = 1/math.pi     # set tau / period ratio
+
+    compare_multi_auto_tau(dir1, base1,
+                           dir2, base2,
+                           tau_T,
+                           tau_detect_f=True,
+                           embed_crop=window,
+                           ds_rate=1,
+                           i_lims=(36, 64),  # specify note range
+                           save_worms=True)
+
+    frames_to_movie('output/viol_test_7_tau.25T.mp4', framerate=1)
+
+
+
+
 
 
 

@@ -150,7 +150,7 @@ def compare_multi_frame(out_file_name, wave_file_name1, wave_file_name2, frame_n
     pyplot.close(fig)
 
 
-def plot_titlebox(subplot, title_info):
+def plot_titlebox(subplot, info):
 
     # subplot.axis('tight')
     subplot.axis('off')
@@ -159,11 +159,13 @@ def plot_titlebox(subplot, title_info):
     subplot.set_xlim([0, 1])
     subplot.set_ylim([0, 1])
 
-    info_main, info1, info2 = title_info[0], title_info[1], title_info[2]
+    info_main = info['title_main']
+    info1 = info['title_1']
+    info2 = info['title_2']
 
     col_widths = [1, .75]
     col_heights = .05
-    spacing_h = .1
+    spacing_h = .05
     header_h = .1
 
     h2 = col_heights * (len(info2)-1)
@@ -174,7 +176,7 @@ def plot_titlebox(subplot, title_info):
     pos1 = pos2 + h2 + header_h + spacing_h
     pos_main = pos1 + h1 + header_h + spacing_h
 
-
+    tables = []
 
     table_main = subplot.table(
         cellText=info_main,
@@ -183,45 +185,52 @@ def plot_titlebox(subplot, title_info):
     )
 
 
-
-    header_1 = subplot.table(
+    header_1 = subplot.table(   # higher
         cellText=[[info1[0].split('/')[-1]]],
-        bbox=[0, pos1 + header_h, 1, header_h],
+        bbox=[0, pos1 + h1, 1, header_h],
         cellLoc='center'
     )
 
+    try:
+        table_1 = subplot.table(    # higher
+            cellText=info1[1:],
+            colWidths=col_widths,
+            bbox=[0, pos1, 1, h1],
+        )
+        tables.append(table_1)
+        pass
+    except IndexError:
+        pass
 
-    table_1 = subplot.table(
-        cellText=info1[1:],
-        colWidths=col_widths,
-        bbox=[0, pos1, 1, h1],
-    )
 
-
-    header_2 = subplot.table(
+    header_2 = subplot.table(   # lower
         cellText=[[info2[0].split('/')[-1]]],
         bbox=[0, h2, 1, header_h],
         cellLoc='center'
 
     )
-    table_2 = subplot.table(
-        cellText=info2[1:],
-        colWidths=col_widths,
-        bbox=[0, pos2, 1, h2],
-    )
+    try:
+        table_2 = subplot.table(    # lower
+            cellText=info2[1:],
+            colWidths=col_widths,
+            bbox=[0, pos2, 1, h2],
+        )
+        tables.append(table_2)
+        pass
+    except IndexError:
+        pass
 
     for table in [header_1, header_2]:
         table.auto_set_font_size(False)
         table.set_fontsize(10)
 
-    for table in [table_main, table_1, table_2]:
+    for table in tables:
         table.auto_set_font_size(False)
         table.set_fontsize(8)
 
 
 
-
-def compare_multi_frame_new(out_file_name, wave_file_name1, wave_file_name2, frame_num, tau, embed_crop, title_info, dpi):
+def compare_multi_frame_new(out_file_name, wave_file_name1, wave_file_name2, frame_num, embed_crop, info, dpi):
     fig = pyplot.figure(figsize=(11, 5), tight_layout=True, dpi=dpi)
     titlebox = pyplot.subplot2grid((5, 11), (0, 0), rowspan=5, colspan=3)
     dce1 = pyplot.subplot2grid((5, 11), (0, 3), rowspan=4, colspan=4)
@@ -230,7 +239,7 @@ def compare_multi_frame_new(out_file_name, wave_file_name1, wave_file_name2, fra
     wave2 = pyplot.subplot2grid((5, 11), (4, 7), colspan=4, sharey=wave1)
     pyplot.setp(wave2.get_yticklabels(), visible=False)
 
-    plot_titlebox(titlebox, title_info)
+    plot_titlebox(titlebox, info)
 
     plot_dce(dce1, 'data/embedded_coords_comp1.txt')
     plot_dce(dce2, 'data/embedded_coords_comp2.txt')
